@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campground</title>
+</head>
+
+<body>
+  <h1>This is all campgrounds</h1>
+  <p><a href="/campground/new">Add Campground</a></p>
+  <ul>
+    <!--* campgrounds is array from app.get('/') method -->
+    <% for( let campground of campgrounds ) { %>
+      <a href="/campground/<%= campground._id %>">
+        <li>
+          <%= campground.title %>
+        </li>
+      </a>
+      <% } %>
+  </ul>
+</body>
+
+</html>

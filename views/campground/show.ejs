@@ -1,27 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Show</title>
-</head>
-
-<body>
+<% layout('layout/boilerplate') %>
   <!--? "/campground/id" route to view a spicific campground  -->
   <!--? campground is a javascript object like campground = {title: "blah", location: "blah"} which can be accessed with dot operator -->
-  <h1>Title: <%= campground.title %>
-  </h1>
-  <h2>Location: <%= campground.location %>
-  </h2>
-  <p><a href="/campground">All Campgrounds</a></p>
-  <p><a href="/campground/<%= campground.id%>/edit">Edit</a></p>
-
-  <!--! DELETE method overriden here  -->
-  <form action="/campground/<%=campground.id%>?_method=DELETE" method="post">
-    <button type="submit">Delete</button> <!--? On click FORM will be submitted triggering DELETE method  -->
-  </form>
-
-</body>
-
-</html>
+  
+  <div class="row mb-3">
+    <div class="col-6 offset-3">
+      <div class="card">
+        <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.image %>" >
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title %></h5>
+          <p class="card-text"><%= campground.description %></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted"><%= campground.location%></li>
+          <li class="list-group-item">$<%= campground.price%>/night</li>
+        </ul>
+        <div class="card-body">
+          <a class="card-link btn btn-warning" href="/campground/<%= campground.id%>/edit">Edit</a>
+          <!--! DELETE method overriden here  -->
+          <form class="d-inline" action="/campground/<%=campground.id%>?_method=DELETE" method="post">
+            <button type="submit" class="btn btn-danger">Delete</button> <!--? On click FORM will be submitted triggering DELETE method  -->
+          </form>
+          </div>
+          <div class="card-footer text-muted">
+            2 days ago
+          </div>
+      </div>
+    </div>
+  </div>

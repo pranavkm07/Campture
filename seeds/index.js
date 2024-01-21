@@ -21,14 +21,17 @@ const seedDB = async () => {
   *location: [City,State] from cities.js 
   */
   await Campground.deleteMany({});
-  let campground; //a document 
+  let campground; //* A mongoDB document 
   for (let i = 0; i < 50; i++) {
-    let location = getRandomValue(cities)
+    let random1000 = Math.floor(Math.random()*1000);
+    let price = Math.floor(Math.random()*20) + 10;
     campground = new Campground({
       title: `${getRandomValue(descriptors)} ${getRandomValue(places)}`,
-      location: `${location.city}, ${location.state}`
+      location: `${cities[random1000].city}, ${cities[random1000].state}`,
+      image: `https://source.unsplash.com/collection/483251/`,
+      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur, quisquam neque incidunt voluptates dolore delectus! Veniam eius hic numquam neque eaque dolores, culpa adipisci, omnis enim, inventore pariatur ex.'
+
     })
-    console.log(campground.location);
     campground.save();
   }
   campground = await Campground.find({});

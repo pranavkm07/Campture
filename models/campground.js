@@ -17,6 +17,9 @@ const CamgroundSchema = new Schema({
     title: {
         type: String
     },
+    image:{
+        type: String
+    },
     price: {
         type: Number
     },

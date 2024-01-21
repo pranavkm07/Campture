@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const ejs = require("ejs");
+const ejsMate = require("ejs-mate");
 const methodOverride = require('method-override');
 const mongoose = require("mongoose");
 const Campground = require("./models/campground.js");
@@ -10,6 +11,7 @@ const PORT = 3000;
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); //* To access the post request attribute (resources)
+app.engine('ejs', ejsMate);
 
 //* Only method in HTML is POST, to handle delete method in REST we need to override, we do that using method-override module
 app.use(methodOverride('_method')); //* the arguement "_method" will be used to override the method, check edit.ejs 
@@ -54,17 +56,17 @@ app.get('/campground/:id/edit', async (req, res) => {
 });
 
 //? Handle POST request to ADD new Campground  
-app.post('/campground/new', async (req, res) => {
-  const newCampground = Campground({ ...req.body.campground });
+app.post('/campground', async (req, res) => {
+  const newCampground = Campground({ ...req.body.campground }); 
   await newCampground.save();
   res.redirect('/campground')
 });
 
 //? Handle PUT request Edit the specific campground (with id)
 app.put('/campground/:id', async (req, res) => {
-  const { title, location } = req.body.campground; //*title and location is grouped under {campground: {title: "blah", location: "blah"}}
+  const editedValue = req.body.campground; //*title and location is grouped under {campground: {title: "blah", location: "blah"}}
   const { id } = req.params; //* to get ":id" value, we fetch it from URL parameters
-  const editedCampground = await Campground.findByIdAndUpdate(req.params.id, { title: title, location: location });
+  const editedCampground = await Campground.findByIdAndUpdate(req.params.id, editedValue);
   editedCampground.save();
   res.redirect(`/campground/${id}`);
 });

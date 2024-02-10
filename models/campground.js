@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const { campgroundSchema } = require("../schema");
+const Review = require('./review');
 mongoose.set('strictQuery', true);
 
 mongoose.connect('mongodb://127.0.0.1:27017/campture')
@@ -28,9 +29,27 @@ const CamgroundSchema = new Schema({
     },
     location: {
         type: String
-    }
-});
+    },
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Review"
+        }
+    ]
 
+});
+//* Mongoose Hooks/Triggers
+
+CamgroundSchema.post('findOneAndDelete', async (doc)=>{
+    if(doc){
+        //* In the Review collection, remove all the documents that are referenced.
+        await Review.deleteMany({
+            _id: {
+                $in: doc.reviews
+            }
+        })
+    }
+})
 // Export the Mongoose model
 const Campground = mongoose.model("campground", CamgroundSchema);
 module.exports = Campground;

@@ -5,8 +5,9 @@ const ejsMate = require("ejs-mate");
 const methodOverride = require('method-override');
 const mongoose = require("mongoose");
 const Campground = require("./models/campground.js");
+const Review = require("./models/review.js");
 const Joi = require("joi");
-const { campgroundSchema } = require("./schema.js")
+const { campgroundSchema, reviewSchema } = require("./schema.js")
 const catchAsync = require("./utils/catchAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const app = express();
@@ -24,6 +25,18 @@ const validateCampground = (req, res, next) => {
 
   const { error } = campgroundSchema.validate(req.body); //* result after validating
   if (error) {
+    const errorMessage = error.details.map(element => element.message).join(','); //* error message needs to be concatinated if there is more than 1 error
+    throw new ExpressError(errorMessage, 400);
+  } else {
+    next();
+  }
+}
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    console.log(error);
+    console.log("error in review");
     const errorMessage = error.details.map(element => element.message).join(','); //* error message needs to be concatinated if there is more than 1 error
     throw new ExpressError(errorMessage, 400);
   } else {
@@ -60,7 +73,9 @@ app.get('/campground/new', async (req, res) => {
 //? View individual campground
 app.get('/campground/:id', catchAsync(async (req, res) => {
   //* Potential error - searching for wrong id
-  const campground = await Campground.findById(req.params.id);
+  const campground = await Campground.findById(req.params.id).populate('reviews');
+  console.log(campground);
+  console.log("^campground^");
   res.render('campground/show', { campground });
 }));
 
@@ -79,6 +94,16 @@ app.post('/campground', validateCampground, catchAsync(async (req, res, next) =>
   res.redirect('/campground')
 }));
 
+app.post('/campground/:id/reviews', validateReview, async (req, res) => {
+  const campground = await Campground.findById(req.params.id);
+  const review = new Review(req.body.review);
+  campground.reviews.push(review);
+  await review.save();
+  await campground.save();
+  console.log(`redirecting -> /campground/${req.params.id}`);
+  res.redirect(`/campground/${req.params.id}`);
+});
+
 //? Handle PUT request Edit the specific campground (with id)
 app.put('/campground/:id', validateCampground, catchAsync(async (req, res) => {
   //* Potential error - trying to edit page of campground that doesnt exist.
@@ -94,6 +119,13 @@ app.delete('/campground/:id', catchAsync(async (req, res) => {
   await Campground.findByIdAndDelete(req.params.id);
   res.redirect('/campground');
 }));
+
+app.delete('/campground/:id/reviews/:reviewid', catchAsync(async (req, res) => {
+  const { id, reviewid } = req.params;
+  await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewid } });
+  await Review.findByIdAndDelete(reviewid);
+  res.redirect(`/campground/${id}`);
+}))
 
 app.all('*', (req, res, next) => {
   //* If netiher of the methods(get post put delete) or routes match.

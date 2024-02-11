@@ -76,12 +76,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/campture', { useUnifiedTopology: tru
     console.log(err);
   });
 
-//? How passport uses authentication 
-app.get('/fake', async(req, res)=> {
-  const user = new User({email: 'nehdesh@gmail.com', username: 'nehdesh09'}); //* pass email and username 
-  const newUser = await User.register(user, 'carmel@123'); //* hashes the password with salt
-  res.send(newUser);
-})
 //*? Landing page - not built yet
 app.get('/', async (req, res) => {
   res.render('home');

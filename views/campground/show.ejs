@@ -13,19 +13,23 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item text-muted"><%= campground.location%></li>
           <li class="list-group-item">$<%= campground.price%>/night</li>
+          <li class="list-group-item text-muted">Author: <%= campground.author.username%></li>
         </ul>
-        <div class="card-body">
-          <a class="card-link btn btn-warning" href="/campground/<%= campground.id%>/edit">Edit</a>
-          <!--! DELETE method overriden here  -->
-          <form class="d-inline" action="/campground/<%=campground.id%>?_method=DELETE" method="post">
-            <button type="submit" class="btn btn-danger">Delete</button> <!--? On click FORM will be submitted triggering DELETE method  -->
-          </form>
+        <% if(currentUser && campground.author.equals(currentUser._id)) {%>
+          <div class="card-body">
+            <a class="card-link btn btn-warning" href="/campground/<%= campground.id%>/edit">Edit</a>
+            <!--! DELETE method overriden here  -->
+            <form class="d-inline" action="/campground/<%=campground.id%>?_method=DELETE" method="post">
+              <button type="submit" class="btn btn-danger">Delete</button> <!--? On click FORM will be submitted triggering DELETE method  -->
+            </form>
           </div>
+         <% } %>
           <div class="card-footer text-muted">
             2 days ago
           </div>
       </div>
     </div>
+    <% if (currentUser) { %> <!--* Regardless of the user if logged in then show the review form  -->
     <div class="col-6">
       <h2>Leave a Review!</h2>
       <form novalidate action="/campground/<%= campground._id %>/reviews" method="post" class="mb-3 validated-form">
@@ -45,12 +49,16 @@
         <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title">Rating: <%= review.rating %></h5>
+            <h6 class="card-subtitle mb-2 text-muted">By: <%= review.author.username.toUpperCase() %></h6>
             <p class="card-text"><%= review.body %></p>
-            <form action="/campground/<%= campground._id%>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-              <button class="btn btn-sm btn-danger">Delete</button>
-            </form>
+            <% if(currentUser && review.author.equals(currentUser._id)) {%>
+              <form action="/campground/<%= campground._id%>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            <% } %>
           </div>
         </div>
         <% } %>
     </div>
+    <% } %>
   </div>

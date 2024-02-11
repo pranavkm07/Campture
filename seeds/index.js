@@ -22,15 +22,17 @@ const seedDB = async () => {
   */
   await Campground.deleteMany({});
   let campground; //* A mongoDB document 
+  const paulObjectId = '65c859ff46cb76f177e9409a';
   for (let i = 0; i < 50; i++) {
     let random1000 = Math.floor(Math.random()*1000);
     let price = Math.floor(Math.random()*20) + 10;
     campground = new Campground({
+      author: paulObjectId,
       title: `${getRandomValue(descriptors)} ${getRandomValue(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       image: `https://source.unsplash.com/collection/483251/`,
+      price: price,
       description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur, quisquam neque incidunt voluptates dolore delectus! Veniam eius hic numquam neque eaque dolores, culpa adipisci, omnis enim, inventore pariatur ex.'
-
     })
     campground.save();
   }

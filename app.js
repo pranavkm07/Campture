@@ -4,17 +4,18 @@ const ejs = require("ejs");
 const ejsMate = require("ejs-mate");
 const methodOverride = require('method-override');
 const mongoose = require("mongoose");
-const Campground = require("./models/campground.js");
-const Review = require("./models/review.js");
 const Joi = require("joi");
-const catchAsync = require("./utils/catchAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-
-const campground = require('./routes/campgrounds.js');
-const reviews = require('./routes/reviews.js');
-
 const sessions = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user.js');
+
+const campgroundRoutes = require('./routes/campgrounds.js');
+const reviewRoutes = require('./routes/reviews.js');
+const userRoutes = require('./routes/users.js');
+
 
 const app = express();
 const PORT = 3000;
@@ -35,9 +36,26 @@ const sessionsConfig = {
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }
-app.use(sessions(sessionsConfig));
+app.use(sessions(sessionsConfig)); //* should be placed before passport.session()
 app.use(flash()); //* for flash messages
+
+app.use(passport.initialize()); //* for persistent user login
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())) 
+//* Defines ways to let a user in and log them out
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+/*
+ ? Methods like 
+ ? 1. authenticate  
+ ? 2. serialise - log in
+ ? 3. deserialise - log out
+ ? 4. register - checks if username is unique and register with the password
+ ? are pre-defined in LocalStrategy
+ */
 app.use((req, res, next) => {
+  res.locals.currentUser = req.user; //* when a user is serialised the "req.user" will contain all the info
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
@@ -58,13 +76,20 @@ mongoose.connect('mongodb://127.0.0.1:27017/campture', { useUnifiedTopology: tru
     console.log(err);
   });
 
+//? How passport uses authentication 
+app.get('/fake', async(req, res)=> {
+  const user = new User({email: 'nehdesh@gmail.com', username: 'nehdesh09'}); //* pass email and username 
+  const newUser = await User.register(user, 'carmel@123'); //* hashes the password with salt
+  res.send(newUser);
+})
 //*? Landing page - not built yet
 app.get('/', async (req, res) => {
   res.render('home');
 });
 
-app.use('/campground', campground);
-app.use('/campground/:id/reviews', reviews);
+app.use('/', userRoutes);
+app.use('/campground', campgroundRoutes);
+app.use('/campground/:id/reviews', reviewRoutes);
 
 app.all('*', (req, res, next) => {
   //* If netiher of the methods(get post put delete) or routes match.
@@ -77,5 +102,5 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render('error', { err });
 })
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}/campground`);
+  console.log(`Server is running on http://localhost:${PORT}/login`);
 });

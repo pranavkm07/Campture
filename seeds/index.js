@@ -24,15 +24,34 @@ const seedDB = async () => {
   let campground; //* A mongoDB document 
   const paulObjectId = '65c859ff46cb76f177e9409a';
   for (let i = 0; i < 50; i++) {
-    let random1000 = Math.floor(Math.random()*1000);
-    let price = Math.floor(Math.random()*20) + 10;
+    let random1000 = Math.floor(Math.random() * 1000);
+    let price = Math.floor(Math.random() * 20) + 10;
     campground = new Campground({
       author: paulObjectId,
       title: `${getRandomValue(descriptors)} ${getRandomValue(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
-      image: `https://source.unsplash.com/collection/483251/`,
       price: price,
-      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur, quisquam neque incidunt voluptates dolore delectus! Veniam eius hic numquam neque eaque dolores, culpa adipisci, omnis enim, inventore pariatur ex.'
+      geometry: { 
+        type: 'Point', 
+        coordinates: [
+          cities[random1000].longitude, 
+          cities[random1000].latitude
+        ] 
+      },
+      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur, quisquam neque incidunt voluptates dolore delectus! Veniam eius hic numquam neque eaque dolores, culpa adipisci, omnis enim, inventore pariatur ex.',
+      images: [{
+        url: 'https://res.cloudinary.com/dlf59vhjs/image/upload/v1707825939/Campture/ay8f7iekgkpgtim25ult.jpg',
+        filename: 'Campture/ay8f7iekgkpgtim25ult',
+      },
+      {
+        url: 'https://res.cloudinary.com/dlf59vhjs/image/upload/v1707825944/Campture/ztpmnvmy5figjv7u9uab.jpg',
+        filename: 'Campture/ztpmnvmy5figjv7u9uab',
+      },
+      {
+        url: 'https://res.cloudinary.com/dlf59vhjs/image/upload/v1707825947/Campture/voaslypijuzfhr3deezb.jpg',
+        filename: 'Campture/voaslypijuzfhr3deezb',
+      }]
+
     })
     campground.save();
   }

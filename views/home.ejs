@@ -2,13 +2,86 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campture</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/home.css">
+
 </head>
 
-<body>
-  <h1>hey there, home</h1>
+<body class="d-flex text-center text-white bg-dark hidden">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div>
+                <h3 class="float-md-left mb-0">Campture</h3>
+                <nav class="nav nav-masthead justify-content-center float-md-right">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link" href="/campground">Campgrounds</a>
+                    <% if(!currentUser) { %>
+                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/register">Register</a>
+                        <% } else { %>
+                            <a class="nav-link" href="/logout">Logout</a>
+                            <% } %>
+                </nav>
+            </div>
+        </header>
+        <main class="px-3">
+            <h1>Campture</h1>
+            <p class="lead"> Welcome to Campture <br> Jump right in and explore our many campgrounds. <br>
+                Feel free to share some of your own and comment on others! Get ready to embark on an adventure and
+                explore our diverse range of campgrounds...</p>
+            <p class="lead">...Whether you're a seasoned camper or just starting your outdoor journey, Campture is here
+                to provide you with a platform to discover, share, and connect with fellow outdoor enthusiasts.
+
+                Feel free to browse through our collection of campgrounds from around the globe. From tranquil forest
+                retreats to breathtaking mountain vistas, there's something for everyone to enjoy. Join the community,
+                share your own camping experiences, and connect with fellow adventurers!</p>
+            <a href="/campground" class="btn btn-lg btn-secondary font-weight-bold border-white bg-white">View
+                Campgrounds</a>
+        </main>
+
+        <footer class="mt-auto text-white-50">
+            <p>&copy; 2020 </p>
+        </footer>
+
+
+    </div>
+
+    <script>
+        const images = [
+            'https://images.unsplash.com/photo-1503516459261-40c66117780a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MzV8NDgzMjUxfHxlbnwwfHx8fHw%3D', 
+            'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://images.unsplash.com/photo-1503044600630-60c01a3ef702?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Mzh8NDgzMjUxfHxlbnwwfHx8fHw%3D',
+            'https://images.unsplash.com/photo-1503093928907-326ec3f06115?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Mzd8NDgzMjUxfHxlbnwwfHx8fHw%3D',
+            'https://images.unsplash.com/photo-1454614146802-84004a53428d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Njl8NDgzMjUxfHxlbnwwfHx8fHw%3D',
+            'https://images.unsplash.com/photo-1500902613769-d7187c4d501a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8NzF8NDgzMjUxfHxlbnwwfHx8fHw%3D',
+            'https://images.unsplash.com/photo-1500932676556-d1a1368b510a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8NzN8NDgzMjUxfHxlbnwwfHx8fHw%3D'
+
+        ]
+        const randImage = (arr) =>{
+            return arr[Math.floor(Math.random()*arr.length)];
+        }
+        console.log(randImage(images));
+        const hiddenContent = document.querySelector('.hidden')
+        const body = document.querySelector('body');
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${randImage(images)}')`;
+                hiddenContent.classList.remove('hidden');
+                hiddenContent.classList.add('visible');
+
+            }, 100);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

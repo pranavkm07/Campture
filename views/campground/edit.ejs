@@ -3,7 +3,7 @@
   <div class="row">
     <h1 class="text-center">Edit Campground</h1>
     <div class="col-6 offset-3">
-      <form class="validated-form" action="/campground/<%= campground.id%>?_method=PUT" method="post" novalidate>
+      <form class="validated-form" action="/campground/<%= campground.id%>?_method=PUT" method="post" novalidate enctype="multipart/form-data">
         <!-- * novalidate indicates the browser to not validate the form instead lets bootstrap do the validation  -->
 
         <div class="mb-3">
@@ -26,8 +26,7 @@
 
         <div class="mb-3">
           <label class="form-label" for="image">Image URL </label>
-          <input class="form-control" type="text" id="image" name="campground[image]" value="<%= campground.image %>"
-            required>
+          <input type="file" name="image" id="image" multiple>
           <div class="valid-feedback">Better!</div>
 
           <!--* name attribute of IMAGE - is grouped under campground  -->
@@ -52,7 +51,15 @@
 
           <!--* name attribute of description - is grouped under campground  -->
         </div>
-
+        <div class="mb-3">
+          <% campground.images.forEach((img, i) => { %>
+              <img src="<%= img.thumbnail %>" class="img-thumbnail" >
+              <div class="form-check-inline">
+                <input type="checkbox" name="deleteImages[]" value="<%= img.filename %>" id="img-<%=i %>">
+              </div>
+                <label for="img-<%=i %>">Select to Delete</label>
+            <% }) %>
+        </div>
         <div class="mb-3">
           <button class="btn btn-info">Update Campground</button>
         </div>
